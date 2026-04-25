@@ -1,0 +1,21 @@
+name: forecasting-electricity
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12
+  - pandas
+  - numpy
+  - matplotlib
+  - seaborn
+  - ipykernel
+  - scipy
+  - scikit-learn
+  - plotly
+  - jupyterlab
+  - pytest
+  - statsmodels
+  - pyarrow
+  - fastparquet
+  - umap-learn
+
