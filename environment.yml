@@ -18,4 +18,6 @@ dependencies:
   - pyarrow
   - fastparquet
   - umap-learn
-
+  - tqdm
+  - ipywidgets
+prefix: C:\Softwares\miniconda3\envs\forecasting-electricity
