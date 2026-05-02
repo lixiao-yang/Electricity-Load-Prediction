@@ -1,0 +1,42 @@
+project:
+  name: electricity-load-forecasting-cluster6
+  seed: 42
+
+data:
+  train_wide_path: data/train_hourly_preprocessed.parquet
+  test_wide_path: data/test_hourly_preprocessed.parquet
+  clusters_path: data/extended-clustering-high-cov/clusters_3models.parquet
+  timestamp_column: timestamp
+  target_meter_id: MT_362
+  cluster_id: 6
+  cluster_column: cluster_kmeans
+  mape_epsilon: 1.0e-6
+
+paths:
+  artifacts_root: cluster6/artifacts
+  eval_dir: cluster6/artifacts/eval/direct_trend
+  data_output_dir: cluster6/artifacts/data
+  direct_plot_dir: cluster6/artifacts/plots/direct_trend
+  visualization_plot_dir: cluster6/artifacts/plots/visualization
+  model_comparison_validation_path: cluster6/artifacts/eval/direct_trend/model_comparison_validation.parquet
+  rolling_validation_details_path: cluster6/artifacts/eval/direct_trend/rolling_validation_details.parquet
+  final_test_results_path: cluster6/artifacts/eval/direct_trend/final_test_results.parquet
+  final_test_forecast_detail_path: cluster6/artifacts/eval/direct_trend/final_test_forecast_detail.parquet
+  c6_prediction_path: cluster6/artifacts/data/c6_prediction.parquet
+  eval_manifest_path: cluster6/artifacts/eval/direct_trend/eval_manifest.json
+
+model_selection:
+  validation_horizon: null
+  seasonal_lag_hours: 24
+  weekly_lag_hours: 168
+  long_window_hours: 720
+  origin_step_hours: 24
+  max_direct_train_rows: 600000
+  rolling_validation_horizon_hours: 336
+  rolling_validation_origins:
+    - "2014-04-30 23:00:00"
+    - "2014-05-31 23:00:00"
+    - "2014-06-30 23:00:00"
+    - "2014-07-31 23:00:00"
+    - "2014-08-31 23:00:00"
+

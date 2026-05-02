@@ -1,0 +1,24 @@
+{
+  "package": "cluster6",
+  "cluster_id": 6,
+  "target_meter_id": "MT_362",
+  "selected_model": "direct_xgboost",
+  "metrics": {
+    "legacy_test_mape": 15.65018158321182,
+    "test_mape_0_100": 15.65018159801399,
+    "test_epsilon_mape_pct": 15.65018159801399,
+    "test_wmape_0_100": 15.414157570654467,
+    "mape_epsilon": 1e-06,
+    "test_n_obs": 2208,
+    "test_n_positive": 2208
+  },
+  "artifacts": {
+    "model_comparison_validation": "cluster6/artifacts/eval/direct_trend/model_comparison_validation.parquet",
+    "final_test_results": "cluster6/artifacts/eval/direct_trend/final_test_results.parquet",
+    "rolling_validation_details": "cluster6/artifacts/eval/direct_trend/rolling_validation_details.parquet",
+    "final_test_forecast_detail": "cluster6/artifacts/eval/direct_trend/final_test_forecast_detail.parquet",
+    "c6_prediction": "cluster6/artifacts/data/c6_prediction.parquet",
+    "direct_trend_plots": "cluster6/artifacts/plots/direct_trend",
+    "visualization_plots": "cluster6/artifacts/plots/visualization"
+  }
+}

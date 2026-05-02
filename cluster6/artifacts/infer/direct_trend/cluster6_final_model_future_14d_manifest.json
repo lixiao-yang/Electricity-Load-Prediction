@@ -1,0 +1,23 @@
+{
+  "target_meter_id": "MT_362",
+  "selected_model": "direct_xgboost",
+  "selected_parameters": {
+    "n_estimators": 500,
+    "max_depth": 3,
+    "learning_rate": 0.05,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "reg_lambda": 1.0,
+    "min_child_weight": 10,
+    "tree_method": "hist"
+  },
+  "known_actual_start": "2012-10-01 00:00:00",
+  "known_actual_end": "2014-12-31 23:00:00",
+  "future_start": "2015-01-01 00:00:00",
+  "future_end": "2015-01-14 23:00:00",
+  "future_days": 14,
+  "forecast_origin": "2014-12-31 23:00:00",
+  "training_matrix_rows": 261408,
+  "training_matrix_columns": 39,
+  "predictions_path": "/Users/qrange77/Desktop/Forecasting/Proj2/Electricity-Load-Prediction/cluster6/artifacts/infer/direct_trend/cluster6_final_model_future_14d_predictions.parquet"
+}
