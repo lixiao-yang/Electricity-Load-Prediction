@@ -1,0 +1,20 @@
+base_config: data_quick.yaml
+
+run:
+  name: tft_eval_quick
+  dataset_params_path: tft/artifacts_quick/models/tft_shared_pretrain/dataset_params.pt
+  output_root: tft/artifacts_quick/eval
+
+clusters:
+  "10":
+    cluster_id: 10
+    model_name: tft_c10_ft_quick
+    panel_path: tft/artifacts_quick/data/cluster_10_panel.parquet
+    checkpoint_path: tft/artifacts_quick/models/tft_c10_ft/checkpoints/best.ckpt
+    output_dir: tft/artifacts_quick/eval/tft_c10_ft
+  "12":
+    cluster_id: 12
+    model_name: tft_c12_ft_quick
+    panel_path: tft/artifacts_quick/data/cluster_12_panel.parquet
+    checkpoint_path: tft/artifacts_quick/models/tft_c12_ft/checkpoints/best.ckpt
+    output_dir: tft/artifacts_quick/eval/tft_c12_ft

@@ -1,0 +1,9 @@
+{
+  "run_name": "tft_shared_pretrain",
+  "panel_path": "tft\\artifacts\\data\\shared_panel.parquet",
+  "dataset_params_path": "tft\\artifacts\\models\\tft_shared_pretrain\\dataset_params.pt",
+  "best_checkpoint_path": "D:\\MSDS\\2026spring\\Forecasting\\Project2\\Electricity-Load-Prediction\\tft\\artifacts\\models\\tft_shared_pretrain\\checkpoints\\best-v1.ckpt",
+  "train_end_idx": 13103,
+  "val_start_idx": 13104,
+  "val_end_idx": 15311
+}

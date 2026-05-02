@@ -1,0 +1,8 @@
+{
+  "test_month_window_valid": true,
+  "time_order_valid": true,
+  "feature_shift_valid": true,
+  "train_fit_only_valid": true,
+  "passed": true,
+  "violations": []
+}

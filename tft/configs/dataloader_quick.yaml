@@ -1,0 +1,36 @@
+dataset:
+  group_ids:
+  - user_id
+  target: target_load
+  time_idx: time_idx
+  min_encoder_length: 72
+  max_encoder_length: 168
+  max_prediction_length: 24
+  static_categoricals:
+  - user_id
+  - cluster_id_cat
+  time_varying_known_categoricals:
+  - hour_cat
+  - day_of_week_cat
+  - month_cat
+  - is_weekend_cat
+  - holiday_flag_cat
+  time_varying_known_reals: []
+  time_varying_unknown_categoricals: []
+  time_varying_unknown_reals:
+  - target_load
+  dataset_meta_path: tft\artifacts_quick\data\tft_dataset_meta.json
+  train_dataset_parameters_path: tft\artifacts_quick\data\tft_dataset_parameters.pt
+dataloader:
+  train:
+    train: true
+    batch_size: 16
+    num_workers: 0
+  eval:
+    train: false
+    batch_size: 16
+    num_workers: 0
+  predict:
+    train: false
+    batch_size: 16
+    num_workers: 0

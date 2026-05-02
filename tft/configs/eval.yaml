@@ -1,0 +1,20 @@
+base_config: data.yaml
+
+run:
+  name: tft_eval
+  dataset_params_path: tft/artifacts/models/tft_shared_pretrain/dataset_params.pt
+  output_root: tft/artifacts/eval
+
+clusters:
+  "10":
+    cluster_id: 10
+    model_name: tft_c10_ft
+    panel_path: tft/artifacts/data/cluster_10_panel.parquet
+    checkpoint_path: tft/artifacts/models/tft_c10_ft/checkpoints/best.ckpt
+    output_dir: tft/artifacts/eval/tft_c10_ft
+  "12":
+    cluster_id: 12
+    model_name: tft_c12_ft
+    panel_path: tft/artifacts/data/cluster_12_panel.parquet
+    checkpoint_path: tft/artifacts/models/tft_c12_ft/checkpoints/best.ckpt
+    output_dir: tft/artifacts/eval/tft_c12_ft

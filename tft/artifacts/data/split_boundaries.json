@@ -1,0 +1,32 @@
+{
+  "train_wide_path": "data\\train_hourly_preprocessed.parquet",
+  "test_wide_path": "data\\test_hourly_preprocessed.parquet",
+  "clusters_path": "data\\extended-clustering-high-cov\\clusters_3models.parquet",
+  "cluster_ids": [
+    10,
+    12
+  ],
+  "test_months_detected": [
+    "2014-10",
+    "2014-11",
+    "2014-12"
+  ],
+  "train_start": "2013-01-01 00:00:00",
+  "train_end": "2014-06-30 23:00:00",
+  "val_start": "2014-07-01 00:00:00",
+  "val_end": "2014-09-30 23:00:00",
+  "test_start": "2014-10-01 00:00:00",
+  "test_end": "2014-12-31 23:00:00",
+  "future_start": "2015-01-01 00:00:00",
+  "future_end": "2015-01-14 23:00:00",
+  "train_rows": 327600,
+  "val_rows": 55200,
+  "test_rows": 55200,
+  "future_rows": 8400,
+  "user_count": 25,
+  "cluster_user_counts": {
+    "10": 7,
+    "12": 18
+  },
+  "dropped_cluster_users_missing_in_panels": []
+}

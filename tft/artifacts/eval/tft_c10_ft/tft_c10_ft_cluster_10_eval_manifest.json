@@ -1,0 +1,10 @@
+{
+  "model_name": "tft_c10_ft",
+  "cluster_id": 10,
+  "predictions_path": "tft\\artifacts\\eval\\tft_c10_ft\\tft_c10_ft_cluster_10_test_predictions.parquet",
+  "metrics_overall_path": "tft\\artifacts\\eval\\tft_c10_ft\\tft_c10_ft_cluster_10_test_metrics_overall.parquet",
+  "metrics_by_period_path": "tft\\artifacts\\eval\\tft_c10_ft\\tft_c10_ft_cluster_10_test_metrics_by_period.parquet",
+  "metrics_by_user_period_path": "tft\\artifacts\\eval\\tft_c10_ft\\tft_c10_ft_cluster_10_test_metrics_by_user_period.parquet",
+  "overall_mape_0_100": 22.674136229577464,
+  "overall_epsilon_mape_pct": 1867856.6914021706
+}

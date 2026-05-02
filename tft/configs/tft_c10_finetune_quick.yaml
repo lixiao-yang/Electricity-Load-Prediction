@@ -1,0 +1,14 @@
+base_config: data_quick.yaml
+
+run:
+  name: tft_c10_ft_quick
+  cluster_id: 10
+  panel_path: tft/artifacts_quick/data/cluster_10_panel.parquet
+  output_dir: tft/artifacts_quick/models/tft_c10_ft
+  shared_dataset_params_path: tft/artifacts_quick/models/tft_shared_pretrain/dataset_params.pt
+  pretrained_checkpoint_path: tft/artifacts_quick/models/tft_shared_pretrain/checkpoints/best.ckpt
+
+model:
+  learning_rate: 0.0004
+  warmup_steps: 10
+  warmup_init_factor: 0.2

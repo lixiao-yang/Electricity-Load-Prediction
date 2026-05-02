@@ -1,0 +1,6 @@
+base_config: data_quick.yaml
+
+run:
+  name: tft_shared_pretrain_quick
+  panel_path: tft/artifacts_quick/data/shared_panel.parquet
+  output_dir: tft/artifacts_quick/models/tft_shared_pretrain

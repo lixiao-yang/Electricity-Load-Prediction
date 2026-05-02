@@ -1,0 +1,7 @@
+{
+  "model_name": "tft_c12_ft_quick",
+  "cluster_id": 12,
+  "future_days": 14,
+  "prediction_length_hours": 24,
+  "predictions_path": "tft\\artifacts_quick\\infer\\tft_c12_ft\\tft_c12_ft_quick_cluster_12_future_14d_predictions.parquet"
+}

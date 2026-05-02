@@ -1,0 +1,7 @@
+base_config: data.yaml
+
+run:
+  name: tft_shared_pretrain
+  panel_path: tft/artifacts/data/shared_panel.parquet
+  output_dir: tft/artifacts/models/tft_shared_pretrain
+

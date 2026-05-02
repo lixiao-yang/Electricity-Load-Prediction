@@ -1,0 +1,41 @@
+base_config: data.yaml
+
+paths:
+  artifacts_root: tft/artifacts_quick
+  data_output_dir: tft/artifacts_quick/data
+  features_train_path: tft/artifacts_quick/data/features_train.parquet
+  features_val_path: tft/artifacts_quick/data/features_val.parquet
+  features_test_path: tft/artifacts_quick/data/features_test.parquet
+  features_future_known_path: tft/artifacts_quick/data/features_future_known.parquet
+  split_boundaries_path: tft/artifacts_quick/data/split_boundaries.json
+  leakage_audit_path: tft/artifacts_quick/data/leakage_audit.json
+  tft_dataset_meta_path: tft/artifacts_quick/data/tft_dataset_meta.json
+  tft_dataset_parameters_path: tft/artifacts_quick/data/tft_dataset_parameters.pt
+  shared_panel_path: tft/artifacts_quick/data/shared_panel.parquet
+  cluster_10_panel_path: tft/artifacts_quick/data/cluster_10_panel.parquet
+  cluster_12_panel_path: tft/artifacts_quick/data/cluster_12_panel.parquet
+  models_dir: tft/artifacts_quick/models
+  eval_dir: tft/artifacts_quick/eval
+  infer_dir: tft/artifacts_quick/infer
+  agent_bridge_dir: tft/artifacts_quick/agent_bridge
+  dataloader_config_path: tft/configs/dataloader_quick.yaml
+
+model:
+  min_encoder_length: 72
+  max_encoder_length: 168
+  max_prediction_length: 24
+  rolling_stride_hours: 168
+  hidden_size: 16
+  attention_head_size: 1
+  hidden_continuous_size: 8
+  learning_rate: 0.0008
+  warmup_steps: 20
+  warmup_init_factor: 0.2
+  batch_size: 16
+  max_epochs: 1
+  early_stop_patience: 2
+  reduce_on_plateau_patience: 1
+  precision: 32
+  num_workers: 0
+  limit_train_batches: 0.05
+  limit_val_batches: 0.10

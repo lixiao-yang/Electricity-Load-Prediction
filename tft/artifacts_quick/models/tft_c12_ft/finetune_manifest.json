@@ -1,0 +1,11 @@
+{
+  "run_name": "tft_c12_ft_quick",
+  "cluster_id": 12,
+  "panel_path": "tft\\artifacts_quick\\data\\cluster_12_panel.parquet",
+  "shared_dataset_params_path": "tft\\artifacts_quick\\models\\tft_shared_pretrain\\dataset_params.pt",
+  "pretrained_checkpoint_path": "tft\\artifacts_quick\\models\\tft_shared_pretrain\\checkpoints\\best.ckpt",
+  "best_checkpoint_path": "D:\\MSDS\\2026spring\\Forecasting\\Project2\\Electricity-Load-Prediction\\tft\\artifacts_quick\\models\\tft_c12_ft\\checkpoints\\best.ckpt",
+  "train_end_idx": 13103,
+  "val_start_idx": 13104,
+  "val_end_idx": 15311
+}

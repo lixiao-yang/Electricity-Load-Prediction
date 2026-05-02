@@ -1,0 +1,18 @@
+base_config: data.yaml
+
+run:
+  name: tft_c10_ft
+  cluster_id: 10
+  panel_path: tft/artifacts/data/cluster_10_panel.parquet
+  output_dir: tft/artifacts/models/tft_c10_ft
+  shared_dataset_params_path: tft/artifacts/models/tft_shared_pretrain/dataset_params.pt
+  pretrained_checkpoint_path: tft/artifacts/models/tft_shared_pretrain/checkpoints/best.ckpt
+
+model:
+  learning_rate: 0.00025
+  warmup_steps: 100
+  warmup_init_factor: 0.2
+  # Slightly larger finetune batch is usually safe because cluster-specific panels are smaller.
+  # OOM fallback: 56 -> 48 -> 32
+  batch_size: 56
+  num_workers: 8

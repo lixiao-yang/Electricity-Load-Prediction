@@ -1,0 +1,457 @@
+{
+  "builder": "tft.src.data.build_tft_timeseries_dataset",
+  "input_paths": {
+    "train": "tft\\artifacts\\data\\features_train.parquet",
+    "val": "tft\\artifacts\\data\\features_val.parquet",
+    "test": "tft\\artifacts\\data\\features_test.parquet",
+    "future": "tft\\artifacts\\data\\features_future_known.parquet"
+  },
+  "feature_spec": {
+    "prompt_a_known_future_columns": [
+      "hour",
+      "dayofweek",
+      "is_weekend",
+      "month",
+      "holiday_flag"
+    ],
+    "prompt_a_target_derived_columns": [
+      "lag_24",
+      "lag_48",
+      "lag_168",
+      "roll_mean_24",
+      "roll_std_24",
+      "roll_mean_168"
+    ],
+    "use_target_derived_covariates": false,
+    "prompt_a_target_derived_columns_excluded_from_tft_inputs": true,
+    "group_ids": [
+      "user_id"
+    ],
+    "static_categoricals": [
+      "user_id",
+      "cluster_id_cat"
+    ],
+    "time_varying_known_categoricals": [
+      "hour_cat",
+      "day_of_week_cat",
+      "month_cat",
+      "is_weekend_cat",
+      "holiday_flag_cat"
+    ],
+    "time_varying_known_reals": [],
+    "time_varying_unknown_categoricals": [],
+    "time_varying_unknown_reals": [
+      "target_load"
+    ]
+  },
+  "time_index_mapping": {
+    "base_timestamp": "2013-01-01 00:00:00",
+    "frequency": "h",
+    "formula": "time_idx = (timestamp - base_timestamp) / 1 hour"
+  },
+  "split_ranges": {
+    "train": {
+      "timestamp_start": "2013-01-01 00:00:00",
+      "timestamp_end": "2014-06-30 23:00:00",
+      "time_idx_start": 0,
+      "time_idx_end": 13103,
+      "rows": 327600,
+      "users": 25
+    },
+    "val": {
+      "timestamp_start": "2014-07-01 00:00:00",
+      "timestamp_end": "2014-09-30 23:00:00",
+      "time_idx_start": 13104,
+      "time_idx_end": 15311,
+      "rows": 55200,
+      "users": 25
+    },
+    "test": {
+      "timestamp_start": "2014-10-01 00:00:00",
+      "timestamp_end": "2014-12-31 23:00:00",
+      "time_idx_start": 15312,
+      "time_idx_end": 17519,
+      "rows": 55200,
+      "users": 25
+    },
+    "future": {
+      "timestamp_start": "2015-01-01 00:00:00",
+      "timestamp_end": "2015-01-14 23:00:00",
+      "time_idx_start": 17520,
+      "time_idx_end": 17855,
+      "rows": 8400,
+      "users": 25
+    }
+  },
+  "dataset_ranges": {
+    "train": {
+      "dataset_name": "train",
+      "sequence_count": 327625,
+      "predict_mode": false,
+      "source_range": {
+        "timestamp_start": "2013-01-01 00:00:00",
+        "timestamp_end": "2014-06-30 23:00:00",
+        "time_idx_start": 0,
+        "time_idx_end": 13103,
+        "rows": 327600
+      },
+      "prediction_range": {
+        "timestamp_start": "2013-01-01 00:00:00",
+        "timestamp_end": "2014-06-30 23:00:00",
+        "time_idx_start": 0,
+        "time_idx_end": 13103,
+        "rows": 327600,
+        "users": 25
+      },
+      "decoded_index_columns": [
+        "user_id",
+        "time_idx_first",
+        "time_idx_last",
+        "time_idx_first_prediction"
+      ],
+      "decoded_index_preview": [
+        {
+          "user_id": "MT_013",
+          "time_idx_first": 0,
+          "time_idx_last": 1007,
+          "time_idx_first_prediction": 672
+        },
+        {
+          "user_id": "MT_013",
+          "time_idx_first": 1,
+          "time_idx_last": 1008,
+          "time_idx_first_prediction": 673
+        },
+        {
+          "user_id": "MT_013",
+          "time_idx_first": 2,
+          "time_idx_last": 1009,
+          "time_idx_first_prediction": 674
+        },
+        {
+          "user_id": "MT_013",
+          "time_idx_first": 3,
+          "time_idx_last": 1010,
+          "time_idx_first_prediction": 675
+        },
+        {
+          "user_id": "MT_013",
+          "time_idx_first": 4,
+          "time_idx_last": 1011,
+          "time_idx_first_prediction": 676
+        }
+      ],
+      "sequence_count_by_user": {
+        "MT_013": 13105,
+        "MT_014": 13105,
+        "MT_029": 13105,
+        "MT_036": 13105,
+        "MT_045": 13105,
+        "MT_077": 13105,
+        "MT_084": 13105,
+        "MT_090": 13105,
+        "MT_095": 13105,
+        "MT_096": 13105,
+        "MT_097": 13105,
+        "MT_123": 13105,
+        "MT_127": 13105,
+        "MT_128": 13105,
+        "MT_140": 13105,
+        "MT_151": 13105,
+        "MT_153": 13105,
+        "MT_155": 13105,
+        "MT_156": 13105,
+        "MT_158": 13105,
+        "MT_159": 13105,
+        "MT_162": 13105,
+        "MT_164": 13105,
+        "MT_366": 13105,
+        "MT_368": 13105
+      }
+    },
+    "val": {
+      "dataset_name": "val",
+      "sequence_count": 59425,
+      "predict_mode": false,
+      "source_range": {
+        "timestamp_start": "2013-01-01 00:00:00",
+        "timestamp_end": "2014-09-30 23:00:00",
+        "time_idx_start": 0,
+        "time_idx_end": 15311,
+        "rows": 382800
+      },
+      "prediction_range": {
+        "timestamp_start": "2014-07-01 00:00:00",
+        "timestamp_end": "2014-09-30 23:00:00",
+        "time_idx_start": 13104,
+        "time_idx_end": 15311,
+        "rows": 55200,
+        "users": 25
+      },
+      "decoded_index_columns": [
+        "user_id",
+        "time_idx_first",
+        "time_idx_last",
+        "time_idx_first_prediction"
+      ],
+      "decoded_index_preview": [
+        {
+          "user_id": "MT_013",
+          "time_idx_first": 12432,
+          "time_idx_last": 13439,
+          "time_idx_first_prediction": 13104
+        },
+        {
+          "user_id": "MT_013",
+          "time_idx_first": 12433,
+          "time_idx_last": 13440,
+          "time_idx_first_prediction": 13105
+        },
+        {
+          "user_id": "MT_013",
+          "time_idx_first": 12434,
+          "time_idx_last": 13441,
+          "time_idx_first_prediction": 13106
+        },
+        {
+          "user_id": "MT_013",
+          "time_idx_first": 12435,
+          "time_idx_last": 13442,
+          "time_idx_first_prediction": 13107
+        },
+        {
+          "user_id": "MT_013",
+          "time_idx_first": 12436,
+          "time_idx_last": 13443,
+          "time_idx_first_prediction": 13108
+        }
+      ],
+      "sequence_count_by_user": {
+        "MT_013": 2377,
+        "MT_014": 2377,
+        "MT_029": 2377,
+        "MT_036": 2377,
+        "MT_045": 2377,
+        "MT_077": 2377,
+        "MT_084": 2377,
+        "MT_090": 2377,
+        "MT_095": 2377,
+        "MT_096": 2377,
+        "MT_097": 2377,
+        "MT_123": 2377,
+        "MT_127": 2377,
+        "MT_128": 2377,
+        "MT_140": 2377,
+        "MT_151": 2377,
+        "MT_153": 2377,
+        "MT_155": 2377,
+        "MT_156": 2377,
+        "MT_158": 2377,
+        "MT_159": 2377,
+        "MT_162": 2377,
+        "MT_164": 2377,
+        "MT_366": 2377,
+        "MT_368": 2377
+      }
+    },
+    "test": {
+      "dataset_name": "test",
+      "sequence_count": 59425,
+      "predict_mode": false,
+      "source_range": {
+        "timestamp_start": "2013-01-01 00:00:00",
+        "timestamp_end": "2014-12-31 23:00:00",
+        "time_idx_start": 0,
+        "time_idx_end": 17519,
+        "rows": 438000
+      },
+      "prediction_range": {
+        "timestamp_start": "2014-10-01 00:00:00",
+        "timestamp_end": "2014-12-31 23:00:00",
+        "time_idx_start": 15312,
+        "time_idx_end": 17519,
+        "rows": 55200,
+        "users": 25
+      },
+      "decoded_index_columns": [
+        "user_id",
+        "time_idx_first",
+        "time_idx_last",
+        "time_idx_first_prediction"
+      ],
+      "decoded_index_preview": [
+        {
+          "user_id": "MT_013",
+          "time_idx_first": 14640,
+          "time_idx_last": 15647,
+          "time_idx_first_prediction": 15312
+        },
+        {
+          "user_id": "MT_013",
+          "time_idx_first": 14641,
+          "time_idx_last": 15648,
+          "time_idx_first_prediction": 15313
+        },
+        {
+          "user_id": "MT_013",
+          "time_idx_first": 14642,
+          "time_idx_last": 15649,
+          "time_idx_first_prediction": 15314
+        },
+        {
+          "user_id": "MT_013",
+          "time_idx_first": 14643,
+          "time_idx_last": 15650,
+          "time_idx_first_prediction": 15315
+        },
+        {
+          "user_id": "MT_013",
+          "time_idx_first": 14644,
+          "time_idx_last": 15651,
+          "time_idx_first_prediction": 15316
+        }
+      ],
+      "sequence_count_by_user": {
+        "MT_013": 2377,
+        "MT_014": 2377,
+        "MT_029": 2377,
+        "MT_036": 2377,
+        "MT_045": 2377,
+        "MT_077": 2377,
+        "MT_084": 2377,
+        "MT_090": 2377,
+        "MT_095": 2377,
+        "MT_096": 2377,
+        "MT_097": 2377,
+        "MT_123": 2377,
+        "MT_127": 2377,
+        "MT_128": 2377,
+        "MT_140": 2377,
+        "MT_151": 2377,
+        "MT_153": 2377,
+        "MT_155": 2377,
+        "MT_156": 2377,
+        "MT_158": 2377,
+        "MT_159": 2377,
+        "MT_162": 2377,
+        "MT_164": 2377,
+        "MT_366": 2377,
+        "MT_368": 2377
+      }
+    },
+    "future": {
+      "dataset_name": "future",
+      "sequence_count": 25,
+      "predict_mode": true,
+      "source_range": {
+        "timestamp_start": "2013-01-01 00:00:00",
+        "timestamp_end": "2015-01-14 23:00:00",
+        "time_idx_start": 0,
+        "time_idx_end": 17855,
+        "rows": 446400
+      },
+      "prediction_range": {
+        "timestamp_start": "2015-01-01 00:00:00",
+        "timestamp_end": "2015-01-14 23:00:00",
+        "time_idx_start": 17520,
+        "time_idx_end": 17855,
+        "rows": 8400,
+        "users": 25
+      },
+      "decoded_index_columns": [
+        "user_id",
+        "time_idx_first",
+        "time_idx_last",
+        "time_idx_first_prediction"
+      ],
+      "decoded_index_preview": [
+        {
+          "user_id": "MT_013",
+          "time_idx_first": 16848,
+          "time_idx_last": 17855,
+          "time_idx_first_prediction": 17520
+        },
+        {
+          "user_id": "MT_014",
+          "time_idx_first": 16848,
+          "time_idx_last": 17855,
+          "time_idx_first_prediction": 17520
+        },
+        {
+          "user_id": "MT_029",
+          "time_idx_first": 16848,
+          "time_idx_last": 17855,
+          "time_idx_first_prediction": 17520
+        },
+        {
+          "user_id": "MT_036",
+          "time_idx_first": 16848,
+          "time_idx_last": 17855,
+          "time_idx_first_prediction": 17520
+        },
+        {
+          "user_id": "MT_045",
+          "time_idx_first": 16848,
+          "time_idx_last": 17855,
+          "time_idx_first_prediction": 17520
+        }
+      ],
+      "sequence_count_by_user": {
+        "MT_013": 1,
+        "MT_014": 1,
+        "MT_029": 1,
+        "MT_036": 1,
+        "MT_045": 1,
+        "MT_077": 1,
+        "MT_084": 1,
+        "MT_090": 1,
+        "MT_095": 1,
+        "MT_096": 1,
+        "MT_097": 1,
+        "MT_123": 1,
+        "MT_127": 1,
+        "MT_128": 1,
+        "MT_140": 1,
+        "MT_151": 1,
+        "MT_153": 1,
+        "MT_155": 1,
+        "MT_156": 1,
+        "MT_158": 1,
+        "MT_159": 1,
+        "MT_162": 1,
+        "MT_164": 1,
+        "MT_366": 1,
+        "MT_368": 1
+      }
+    }
+  },
+  "categorical_encoder_mappings": {
+    "user_id": null,
+    "cluster_id_cat": null,
+    "hour_cat": null,
+    "day_of_week_cat": null,
+    "month_cat": null,
+    "is_weekend_cat": null,
+    "holiday_flag_cat": null
+  },
+  "paths": {
+    "dataset_meta_path": "tft\\artifacts\\data\\tft_dataset_meta.json",
+    "train_dataset_parameters_path": "tft\\artifacts\\data\\tft_dataset_parameters.pt",
+    "dataloader_config_path": "tft\\configs\\dataloader.yaml"
+  },
+  "future_target_placeholder": {
+    "applied_split": "future",
+    "strategy": "per-user last observed target from train+val+test",
+    "target_col": "target_load",
+    "user_count": 25
+  },
+  "leakage_controls": {
+    "train_normalizer_fit_only": true,
+    "target_derived_covariates_excluded_from_tft_inputs": true,
+    "future_target_placeholder_uses_observed_history_only": true,
+    "val_dataset_from_train_parameters_only": true,
+    "test_dataset_from_train_parameters_only": true,
+    "future_dataset_from_train_parameters_only": true,
+    "prediction_ranges_are_split_isolated": true
+  }
+}
