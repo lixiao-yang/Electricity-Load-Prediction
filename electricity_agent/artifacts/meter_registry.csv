@@ -1,0 +1,27 @@
+meter_id,meter_id_norm,cluster,model_name,status,notes
+MT_090,MT_090,C10,tft_c10_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_158,MT_158,C10,tft_c10_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_159,MT_159,C10,tft_c10_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_162,MT_162,C10,tft_c10_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_164,MT_164,C10,tft_c10_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_366,MT_366,C10,tft_c10_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_368,MT_368,C10,tft_c10_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_013,MT_013,C12,tft_c12_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_014,MT_014,C12,tft_c12_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_029,MT_029,C12,tft_c12_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_036,MT_036,C12,tft_c12_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_045,MT_045,C12,tft_c12_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_077,MT_077,C12,tft_c12_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_084,MT_084,C12,tft_c12_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_095,MT_095,C12,tft_c12_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_096,MT_096,C12,tft_c12_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_097,MT_097,C12,tft_c12_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_123,MT_123,C12,tft_c12_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_127,MT_127,C12,tft_c12_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_128,MT_128,C12,tft_c12_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_140,MT_140,C12,tft_c12_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_151,MT_151,C12,tft_c12_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_153,MT_153,C12,tft_c12_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_155,MT_155,C12,tft_c12_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_156,MT_156,C12,tft_c12_ft,connected,Forecast rows available in future and evaluation bundles.
+MT_362,MT_362,C6,direct_xgboost,connected,Forecast rows available in future and evaluation bundles.

@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-05-02T20:05:32.251523+00:00",
+  "status": "Electricity forecast artifacts connected",
+  "registry_path": "electricity_agent/artifacts/meter_registry.csv",
+  "forecast_bundle_path": "electricity_agent/artifacts/forecast_bundle.csv",
+  "metrics_bundle_path": "electricity_agent/artifacts/metrics_bundle.csv",
+  "meters": 26,
+  "enabled_clusters": [
+    "C10",
+    "C12",
+    "C6"
+  ],
+  "forecast_interface": "connected",
+  "future_rows": 8736,
+  "evaluation_rows": 665808,
+  "rebuild_controls": false
+}
