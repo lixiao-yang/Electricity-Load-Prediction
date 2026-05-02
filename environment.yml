@@ -21,4 +21,7 @@ dependencies:
   - tqdm
   - ipywidgets
   - tensorboard
+  - streamlit
+  - python-dotenv
+  - openai
 prefix: C:\Softwares\miniconda3\envs\forecasting-electricity
