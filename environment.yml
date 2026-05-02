@@ -5,7 +5,7 @@ channels:
 dependencies:
   - python=3.12
   - pandas
-  - numpy
+  - numpy[version='<2']
   - matplotlib
   - seaborn
   - ipykernel
@@ -20,4 +20,5 @@ dependencies:
   - umap-learn
   - tqdm
   - ipywidgets
+  - tensorboard
 prefix: C:\Softwares\miniconda3\envs\forecasting-electricity
