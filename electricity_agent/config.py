@@ -42,6 +42,28 @@ CLUSTER6_METRICS_PATH = (
     PROJECT_ROOT / "cluster6" / "artifacts" / "eval" / "direct_trend" / "final_test_results.parquet"
 )
 
+DEEPAR_FUTURE_PREDICTIONS_PATHS = (
+    PROJECT_ROOT / "deepar" / "output" / "future_3months_predictions_1_11.parquet",
+    PROJECT_ROOT / "deepar" / "output" / "future_3months_predictions_2_3.parquet",
+    PROJECT_ROOT / "deepar" / "output" / "future_3months_predictions_7.parquet",
+)
+DEEPAR_EVALUATION_PREDICTIONS_PATHS = (
+    PROJECT_ROOT
+    / "deepar"
+    / "output"
+    / "deepar_random_search_1_11"
+    / "trial_07"
+    / "deepar_clusters_1_11_predictions.parquet",
+    PROJECT_ROOT / "deepar" / "output" / "deepar_clusters_2_3" / "deepar_clusters_2_3_predictions.parquet",
+    PROJECT_ROOT
+    / "deepar"
+    / "output"
+    / "deepar_random_search_7"
+    / "trial_01"
+    / "deepar_clusters_7_validation_predictions.parquet",
+)
+DEEPAR_MODEL_NAME = "deepar"
+
 DEFAULT_HORIZON_HOURS = 24 * 14
 MAX_HORIZON_HOURS = 24 * 90
 

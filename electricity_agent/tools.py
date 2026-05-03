@@ -13,6 +13,9 @@ from electricity_agent.config import (
     CLUSTER6_TEST_PREDICTIONS_PATH,
     DEFAULT_TEST_PATH,
     DEFAULT_TRAIN_PATH,
+    DEEPAR_EVALUATION_PREDICTIONS_PATHS,
+    DEEPAR_FUTURE_PREDICTIONS_PATHS,
+    DEEPAR_MODEL_NAME,
     FORECAST_BUNDLE_PATH,
     MANIFEST_PATH,
     METRICS_BUNDLE_PATH,
@@ -44,7 +47,11 @@ def load_registry(registry_path: str | Path = REGISTRY_PATH) -> pd.DataFrame:
     df = pd.read_csv(path)
     if "meter_id_norm" not in df.columns:
         df["meter_id_norm"] = df["meter_id"].map(normalize_meter_id)
-    return df
+    deepar_registry = _build_deepar_registry_from_sources()
+    if not deepar_registry.empty:
+        df = pd.concat([df, deepar_registry], ignore_index=True, sort=False)
+        df = df.drop_duplicates(subset=["meter_id_norm"], keep="first")
+    return df.sort_values(["cluster", "meter_id"]).reset_index(drop=True)
 
 
 def resolve_meter_strict(query: str, registry_path: str | Path = REGISTRY_PATH) -> Dict[str, Any]:
@@ -147,6 +154,9 @@ def load_forecast_bundle(bundle_path: str | Path = FORECAST_BUNDLE_PATH) -> pd.D
         df = pd.read_csv(path)
     else:
         df = _build_forecast_bundle_from_sources()
+    deepar_df = _build_deepar_forecast_bundle_from_sources()
+    if not deepar_df.empty:
+        df = pd.concat([df, deepar_df], ignore_index=True, sort=False)
     if df.empty:
         return _empty_forecast_bundle()
     df["meter_id"] = df["meter_id"].astype(str)
@@ -159,6 +169,9 @@ def load_forecast_bundle(bundle_path: str | Path = FORECAST_BUNDLE_PATH) -> pd.D
             df[col] = pd.to_numeric(df[col], errors="coerce")
     return df.dropna(subset=["forecast_timestamp"]).sort_values(
         ["meter_id_norm", "mode", "forecast_timestamp"]
+    ).drop_duplicates(
+        subset=["meter_id_norm", "mode", "forecast_timestamp", "model_name"],
+        keep="last",
     )
 
 
@@ -169,10 +182,13 @@ def load_metrics_bundle(bundle_path: str | Path = METRICS_BUNDLE_PATH) -> pd.Dat
         df = pd.read_csv(path)
     else:
         df = _build_metrics_bundle_from_sources()
+    deepar_metrics = _build_deepar_metrics_bundle_from_sources()
+    if not deepar_metrics.empty:
+        df = pd.concat([df, deepar_metrics], ignore_index=True, sort=False)
     if df.empty:
         return pd.DataFrame(columns=["cluster", "model_name"])
     df["cluster"] = df["cluster"].astype(str)
-    return df
+    return df.drop_duplicates(subset=["cluster", "model_name"], keep="last")
 
 
 def _merge_metric_metadata(metadata: Dict[str, Any]) -> Dict[str, Any]:
@@ -191,6 +207,7 @@ def _build_forecast_bundle_from_sources() -> pd.DataFrame:
         _standardize_tft_test(TFT_TEST_PREDICTIONS_PATH),
         _standardize_cluster6_future(CLUSTER6_FUTURE_PREDICTIONS_PATH),
         _standardize_cluster6_test(CLUSTER6_TEST_PREDICTIONS_PATH),
+        _build_deepar_forecast_bundle_from_sources(),
     ]
     frames = [frame for frame in frames if not frame.empty]
     if not frames:
@@ -199,7 +216,11 @@ def _build_forecast_bundle_from_sources() -> pd.DataFrame:
 
 
 def _build_metrics_bundle_from_sources() -> pd.DataFrame:
-    frames = [_standardize_tft_metrics(TFT_METRICS_PATH), _standardize_cluster6_metrics(CLUSTER6_METRICS_PATH)]
+    frames = [
+        _standardize_tft_metrics(TFT_METRICS_PATH),
+        _standardize_cluster6_metrics(CLUSTER6_METRICS_PATH),
+        _build_deepar_metrics_bundle_from_sources(),
+    ]
     frames = [frame for frame in frames if not frame.empty]
     if not frames:
         return pd.DataFrame(columns=["cluster", "model_name"])
@@ -338,6 +359,136 @@ def _standardize_cluster6_metrics(path: str | Path) -> pd.DataFrame:
     )
 
 
+def _build_deepar_registry_from_sources() -> pd.DataFrame:
+    frames = []
+    for path in [*DEEPAR_FUTURE_PREDICTIONS_PATHS, *DEEPAR_EVALUATION_PREDICTIONS_PATHS]:
+        path = Path(path)
+        if not path.exists():
+            continue
+        df = _read_parquet_compat(path)
+        if df.empty or not {"meter_id", "cluster_id"}.issubset(df.columns):
+            continue
+        frame = df[["meter_id", "cluster_id"]].drop_duplicates().copy()
+        frames.append(frame)
+    if not frames:
+        return pd.DataFrame(columns=["meter_id", "meter_id_norm", "cluster", "model_name", "status", "notes"])
+    registry = pd.concat(frames, ignore_index=True).drop_duplicates()
+    registry["meter_id"] = registry["meter_id"].astype(str)
+    registry["meter_id_norm"] = registry["meter_id"].map(normalize_meter_id)
+    registry["cluster"] = "C" + registry["cluster_id"].astype(int).astype(str)
+    registry["model_name"] = DEEPAR_MODEL_NAME
+    registry["status"] = "connected"
+    registry["notes"] = "DeepAR forecast rows available from parquet artifacts."
+    return registry[["meter_id", "meter_id_norm", "cluster", "model_name", "status", "notes"]]
+
+
+def _build_deepar_forecast_bundle_from_sources() -> pd.DataFrame:
+    frames: List[pd.DataFrame] = []
+    for path in DEEPAR_FUTURE_PREDICTIONS_PATHS:
+        frame = _standardize_deepar_future(path)
+        if not frame.empty:
+            frames.append(frame)
+    for path in DEEPAR_EVALUATION_PREDICTIONS_PATHS:
+        frame = _standardize_deepar_evaluation(path)
+        if not frame.empty:
+            frames.append(frame)
+    if not frames:
+        return _empty_forecast_bundle()
+    return pd.concat(frames, ignore_index=True, sort=False)
+
+
+def _standardize_deepar_future(path: str | Path) -> pd.DataFrame:
+    path = Path(path)
+    if not path.exists():
+        return _empty_forecast_bundle()
+    df = _read_parquet_compat(path)
+    if df.empty:
+        return _empty_forecast_bundle()
+    return pd.DataFrame(
+        {
+            "meter_id": df["meter_id"].astype(str),
+            "cluster": "C" + df["cluster_id"].astype(int).astype(str),
+            "model_name": DEEPAR_MODEL_NAME,
+            "mode": "future",
+            "forecast_timestamp": pd.to_datetime(df["timestamp"], errors="coerce"),
+            "forecast_value": pd.to_numeric(df["y_pred"], errors="coerce"),
+            "actual_value": pd.NA,
+            "prediction_lower": pd.NA,
+            "prediction_upper": pd.NA,
+            "phase": "FUTURE",
+        }
+    ).assign(meter_id_norm=lambda rows: rows["meter_id"].map(normalize_meter_id))
+
+
+def _standardize_deepar_evaluation(path: str | Path) -> pd.DataFrame:
+    path = Path(path)
+    if not path.exists():
+        return _empty_forecast_bundle()
+    df = _read_parquet_compat(path)
+    if df.empty:
+        return _empty_forecast_bundle()
+    phase = "VALIDATION" if "validation" in path.name else "TEST"
+    return pd.DataFrame(
+        {
+            "meter_id": df["meter_id"].astype(str),
+            "cluster": "C" + df["cluster_id"].astype(int).astype(str),
+            "model_name": DEEPAR_MODEL_NAME,
+            "mode": "evaluation",
+            "forecast_timestamp": pd.to_datetime(df["timestamp"], errors="coerce"),
+            "forecast_value": pd.to_numeric(df["y_pred"], errors="coerce"),
+            "actual_value": pd.to_numeric(df["y_true"], errors="coerce"),
+            "prediction_lower": pd.NA,
+            "prediction_upper": pd.NA,
+            "phase": phase,
+        }
+    ).assign(meter_id_norm=lambda rows: rows["meter_id"].map(normalize_meter_id))
+
+
+def _build_deepar_metrics_bundle_from_sources() -> pd.DataFrame:
+    frames = []
+    for path in DEEPAR_EVALUATION_PREDICTIONS_PATHS:
+        path = Path(path)
+        if not path.exists():
+            continue
+        df = _read_parquet_compat(path)
+        if df.empty:
+            continue
+        frames.append(_metrics_from_deepar_predictions(df))
+    if not frames:
+        return pd.DataFrame(columns=["cluster", "model_name"])
+    metrics = pd.concat(frames, ignore_index=True, sort=False)
+    return metrics.groupby(["cluster", "model_name"], as_index=False).agg(
+        {
+            "test_mape_0_100": "mean",
+            "test_wmape_0_100": "mean",
+            "test_n_obs": "sum",
+        }
+    )
+
+
+def _metrics_from_deepar_predictions(df: pd.DataFrame) -> pd.DataFrame:
+    rows = []
+    work = df.copy()
+    work["actual"] = pd.to_numeric(work["y_true"], errors="coerce")
+    work["prediction"] = pd.to_numeric(work["y_pred"], errors="coerce")
+    for cluster_id, cluster_df in work.groupby("cluster_id"):
+        actual = cluster_df["actual"].astype(float)
+        pred = cluster_df["prediction"].astype(float)
+        denom = actual.abs().replace(0, pd.NA)
+        ape = ((actual - pred).abs() / denom * 100.0).dropna().clip(lower=0.0, upper=100.0)
+        wmape_denom = float(actual.abs().sum())
+        rows.append(
+            {
+                "cluster": f"C{int(cluster_id)}",
+                "model_name": DEEPAR_MODEL_NAME,
+                "test_mape_0_100": float(ape.mean()) if not ape.empty else pd.NA,
+                "test_wmape_0_100": float((actual - pred).abs().sum() / wmape_denom * 100.0) if wmape_denom else pd.NA,
+                "test_n_obs": int(len(cluster_df)),
+            }
+        )
+    return pd.DataFrame(rows)
+
+
 def _empty_forecast_bundle() -> pd.DataFrame:
     return pd.DataFrame(
         columns=[
@@ -428,7 +579,17 @@ def load_manifest(manifest_path: str | Path = MANIFEST_PATH) -> Optional[Dict[st
     if not path.exists():
         return None
     with path.open("r", encoding="utf-8") as handle:
-        return json.load(handle)
+        manifest = json.load(handle)
+    try:
+        registry_df = load_registry()
+        if not registry_df.empty:
+            manifest["meters"] = int(registry_df["meter_id_norm"].nunique())
+            manifest["enabled_clusters"] = sorted(registry_df["cluster"].dropna().astype(str).unique().tolist())
+            if "DeepAR dynamic parquet sources" not in str(manifest.get("forecast_interface", "")):
+                manifest["forecast_interface"] = "connected with DeepAR dynamic parquet sources"
+    except Exception:
+        pass
+    return manifest
 
 
 def clear_caches() -> None:

@@ -31,10 +31,28 @@ MAX_SAVED_QUERIES = 5
 
 CLUSTER_GUIDE: List[Dict[str, str]] = [
     {
+        "cluster": "C1 / C11",
+        "title": "DeepAR Customer Groups",
+        "model": "deepar",
+        "description": "Clusters 1 and 11 use DeepAR user-level evaluation rows and 3-month future prediction artifacts.",
+    },
+    {
+        "cluster": "C2 / C3",
+        "title": "DeepAR Customer Groups",
+        "model": "deepar",
+        "description": "Clusters 2 and 3 use DeepAR user-level test rows and 3-month future prediction artifacts.",
+    },
+    {
         "cluster": "C6",
         "title": "Single High-Load Customer",
         "model": "direct_xgboost",
         "description": "Cluster 6 contains MT_362, a high-load customer served by the direct trend model.",
+    },
+    {
+        "cluster": "C7",
+        "title": "DeepAR Customer Group",
+        "model": "deepar",
+        "description": "Cluster 7 uses DeepAR validation rows and 3-month future prediction artifacts.",
     },
     {
         "cluster": "C10 / C12",
@@ -50,7 +68,7 @@ def main() -> None:
         st.session_state["forecast_mode"] = "evaluation"
 
     st.title("Electricity Load Forecast Query Agent")
-    st.caption("Ask for an electricity load forecast by meter ID. Connected artifacts include cluster 6 plus TFT clusters 10 and 12.")
+    st.caption("Ask for an electricity load forecast by meter ID. Connected artifacts include DeepAR, cluster 6, and TFT outputs.")
 
     with st.sidebar:
         st.markdown(
@@ -60,7 +78,7 @@ def main() -> None:
                     Forecast Mode
                 </div>
                 <div style="font-size:0.95rem;color:#5b3b00;margin-top:0.2rem;">
-                    Future mode uses 14-day forecast artifacts. Evaluation mode uses held-out test predictions.
+                    Future mode uses available future forecast artifacts. Evaluation mode uses held-out test or validation predictions.
                 </div>
             </div>
             """,
@@ -69,7 +87,7 @@ def main() -> None:
         future_mode_enabled = st.toggle(
             "Future mode",
             value=st.session_state.get("forecast_mode", "future") == "future",
-            help="Off: evaluation rows from test predictions. On: future 14-day forecast rows.",
+            help="Off: evaluation rows from test or validation predictions. On: future forecast rows.",
         )
         st.session_state["forecast_mode"] = "future" if future_mode_enabled else "evaluation"
         st.caption("Mode: Future forecast" if future_mode_enabled else "Mode: Evaluation forecast")
@@ -135,8 +153,10 @@ def main() -> None:
 
         st.divider()
         st.markdown("Query examples")
+        st.code("Evaluate actual vs predicted for MT_098 over 48 hours")
+        st.code("Show me a daily future forecast for MT_003 for 14 days")
+        st.code("Why does the MT_002 DeepAR forecast change at the end of evaluation?")
         st.code("Evaluate actual vs predicted for MT_090 over 48 hours")
-        st.code("Why does the MT_366 forecast rise at the end of testing?")
         st.code("Compare the evaluation forecast for MT_013 over 7 days")
         st.code("Show me a daily forecast for MT_362 for 14 days")
 

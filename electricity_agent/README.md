@@ -18,11 +18,16 @@ Intentional differences:
 - Rebuild buttons and asset build flows are removed.
 - Forecast rows are connected through standardized CSV bundles in `electricity_agent/artifacts/`.
 - `electricity_agent.tools.get_meter_forecast()` routes requests to cluster 6, TFT cluster 10, or TFT cluster 12 outputs.
+- DeepAR outputs are read dynamically from `deepar/output/*.parquet` and merged with the existing agent registry, forecast rows, and metrics at runtime. They are not written back into the large CSV bundle.
 - When `OPENAI_API_KEY` is configured, the LLM parses user intent before artifact lookup. The deterministic registry and forecast bundle still validate meter IDs, modes, horizons, and returned forecast rows.
 - If the LLM is unavailable, the agent falls back to the rule-based parser and reports `Intent parser: rules`.
 
 Connected forecast artifacts:
 
+- DeepAR future: `deepar/output/future_3months_predictions_1_11.parquet`
+- DeepAR future: `deepar/output/future_3months_predictions_2_3.parquet`
+- DeepAR future: `deepar/output/future_3months_predictions_7.parquet`
+- DeepAR evaluation/test: selected DeepAR prediction parquet files under `deepar/output/`
 - Cluster 6: `cluster6/artifacts/infer/direct_trend/cluster6_final_model_future_14d_predictions.parquet`
 - Cluster 6 evaluation: `cluster6/artifacts/eval/direct_trend/final_test_forecast_detail.parquet`
 - TFT future: `tft/artifacts/final/user_level_future_predictions_14d.parquet`
