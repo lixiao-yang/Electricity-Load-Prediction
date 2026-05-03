@@ -1,0 +1,690 @@
+[
+  {
+    "config": {
+      "train_path": "train_hourly_preprocessed.parquet",
+      "test_path": "test_hourly_preprocessed.parquet",
+      "cluster_path": "clusters_3models.parquet",
+      "output_dir": "outputs/deepar_random_search_2_3/trial_01",
+      "cluster_ids": [
+        2,
+        3
+      ],
+      "cluster_col": "cluster_kmeans",
+      "freq": "h",
+      "prediction_length": 24,
+      "context_length": 168,
+      "epochs": 10,
+      "learning_rate": 0.001,
+      "batch_size": 64,
+      "num_batches_per_epoch": 50,
+      "num_layers": 2,
+      "hidden_size": 96,
+      "dropout_rate": 0.2,
+      "num_parallel_samples": 50,
+      "seed": 42,
+      "use_hour_of_day": true,
+      "use_day_of_week": true,
+      "use_weekend": true,
+      "use_month": true,
+      "use_holiday": true,
+      "holiday_country": "PT",
+      "validation_months": 3
+    },
+    "metrics": {
+      "overall_mape": 8.319132545044846,
+      "overall_wmape": 7.609014271471214,
+      "overall_epsilon_mape": 8.699319280305774,
+      "cluster_mape": {
+        "2": 7.5021440397126335,
+        "3": 12.588731542996575
+      },
+      "cluster_wmape": {
+        "2": 7.222670591725606,
+        "3": 9.269770982438862
+      },
+      "cluster_epsilon_mape": {
+        "2": 7.77499834637219,
+        "3": 13.529641580216762
+      },
+      "n_predictions": 426144,
+      "n_nonzero_targets": 426140,
+      "n_meters": 193,
+      "meter_mape_head": {
+        "MT_098": 8.398973179812451,
+        "MT_099": 11.098590932350238,
+        "MT_100": 11.975368654396753,
+        "MT_101": 8.946056604484586,
+        "MT_103": 7.651470179019992,
+        "MT_104": 10.618071122269829,
+        "MT_105": 11.185523869494167,
+        "MT_125": 10.157327339131838,
+        "MT_126": 7.360810335417385,
+        "MT_135": 13.558324060729406
+      }
+    },
+    "dynamic_feature_names": [
+      "hour_of_day",
+      "day_of_week",
+      "weekend",
+      "month",
+      "holiday"
+    ],
+    "prediction_path": "outputs/deepar_random_search_2_3/trial_01/deepar_clusters_2_3_validation_predictions.parquet",
+    "metadata_path": "outputs/deepar_random_search_2_3/trial_01/deepar_clusters_2_3_validation_metadata.parquet",
+    "evaluation_split": "validation",
+    "train_range": [
+      "2012-10-01 00:00:00",
+      "2014-06-30 23:00:00"
+    ],
+    "validation_range": [
+      "2014-07-01 00:00:00",
+      "2014-09-30 23:00:00"
+    ],
+    "test_range": [
+      "2014-10-01 00:00:00",
+      "2014-12-31 23:00:00"
+    ]
+  },
+  {
+    "config": {
+      "train_path": "train_hourly_preprocessed.parquet",
+      "test_path": "test_hourly_preprocessed.parquet",
+      "cluster_path": "clusters_3models.parquet",
+      "output_dir": "outputs/deepar_random_search_2_3/trial_02",
+      "cluster_ids": [
+        2,
+        3
+      ],
+      "cluster_col": "cluster_kmeans",
+      "freq": "h",
+      "prediction_length": 24,
+      "context_length": 168,
+      "epochs": 5,
+      "learning_rate": 0.001,
+      "batch_size": 64,
+      "num_batches_per_epoch": 100,
+      "num_layers": 2,
+      "hidden_size": 48,
+      "dropout_rate": 0.1,
+      "num_parallel_samples": 50,
+      "seed": 43,
+      "use_hour_of_day": true,
+      "use_day_of_week": true,
+      "use_weekend": true,
+      "use_month": true,
+      "use_holiday": true,
+      "holiday_country": "PT",
+      "validation_months": 3
+    },
+    "metrics": {
+      "overall_mape": 8.394817163707364,
+      "overall_wmape": 6.747770212899636,
+      "overall_epsilon_mape": 8.808057568569666,
+      "cluster_mape": {
+        "2": 7.215105787173205,
+        "3": 14.560013464816082
+      },
+      "cluster_wmape": {
+        "2": 6.273686793096688,
+        "3": 8.785689460121858
+      },
+      "cluster_epsilon_mape": {
+        "2": 7.500078806065731,
+        "3": 15.643301424235398
+      },
+      "n_predictions": 426144,
+      "n_nonzero_targets": 426140,
+      "n_meters": 193,
+      "meter_mape_head": {
+        "MT_098": 7.826272809754927,
+        "MT_099": 16.23484269030469,
+        "MT_100": 21.977655379602126,
+        "MT_101": 9.85879902614401,
+        "MT_103": 7.623557594769395,
+        "MT_104": 15.895991011000383,
+        "MT_105": 12.513348957071686,
+        "MT_125": 11.340186692855335,
+        "MT_126": 6.267510814706456,
+        "MT_135": 14.979461984965669
+      }
+    },
+    "dynamic_feature_names": [
+      "hour_of_day",
+      "day_of_week",
+      "weekend",
+      "month",
+      "holiday"
+    ],
+    "prediction_path": "outputs/deepar_random_search_2_3/trial_02/deepar_clusters_2_3_validation_predictions.parquet",
+    "metadata_path": "outputs/deepar_random_search_2_3/trial_02/deepar_clusters_2_3_validation_metadata.parquet",
+    "evaluation_split": "validation",
+    "train_range": [
+      "2012-10-01 00:00:00",
+      "2014-06-30 23:00:00"
+    ],
+    "validation_range": [
+      "2014-07-01 00:00:00",
+      "2014-09-30 23:00:00"
+    ],
+    "test_range": [
+      "2014-10-01 00:00:00",
+      "2014-12-31 23:00:00"
+    ]
+  },
+  {
+    "config": {
+      "train_path": "train_hourly_preprocessed.parquet",
+      "test_path": "test_hourly_preprocessed.parquet",
+      "cluster_path": "clusters_3models.parquet",
+      "output_dir": "outputs/deepar_random_search_2_3/trial_03",
+      "cluster_ids": [
+        2,
+        3
+      ],
+      "cluster_col": "cluster_kmeans",
+      "freq": "h",
+      "prediction_length": 24,
+      "context_length": 336,
+      "epochs": 10,
+      "learning_rate": 0.001,
+      "batch_size": 64,
+      "num_batches_per_epoch": 100,
+      "num_layers": 2,
+      "hidden_size": 128,
+      "dropout_rate": 0.1,
+      "num_parallel_samples": 50,
+      "seed": 44,
+      "use_hour_of_day": true,
+      "use_day_of_week": true,
+      "use_weekend": true,
+      "use_month": true,
+      "use_holiday": true,
+      "holiday_country": "PT",
+      "validation_months": 3
+    },
+    "metrics": {
+      "overall_mape": 7.158661700673277,
+      "overall_wmape": 6.3079773220425075,
+      "overall_epsilon_mape": 7.553068966131669,
+      "cluster_mape": {
+        "2": 6.193130189368277,
+        "3": 12.204549551301403
+      },
+      "cluster_wmape": {
+        "2": 5.814527668689861,
+        "3": 8.429145251771992
+      },
+      "cluster_epsilon_mape": {
+        "2": 6.463395451773023,
+        "3": 13.247491847618791
+      },
+      "n_predictions": 426144,
+      "n_nonzero_targets": 426140,
+      "n_meters": 193,
+      "meter_mape_head": {
+        "MT_098": 6.796208726206132,
+        "MT_099": 9.866527420395483,
+        "MT_100": 10.929927933251015,
+        "MT_101": 8.379063622696613,
+        "MT_103": 6.4457113516403775,
+        "MT_104": 11.99598274415,
+        "MT_105": 10.99761576400737,
+        "MT_125": 9.179955107614633,
+        "MT_126": 5.43432779764555,
+        "MT_135": 12.875626099391535
+      }
+    },
+    "dynamic_feature_names": [
+      "hour_of_day",
+      "day_of_week",
+      "weekend",
+      "month",
+      "holiday"
+    ],
+    "prediction_path": "outputs/deepar_random_search_2_3/trial_03/deepar_clusters_2_3_validation_predictions.parquet",
+    "metadata_path": "outputs/deepar_random_search_2_3/trial_03/deepar_clusters_2_3_validation_metadata.parquet",
+    "evaluation_split": "validation",
+    "train_range": [
+      "2012-10-01 00:00:00",
+      "2014-06-30 23:00:00"
+    ],
+    "validation_range": [
+      "2014-07-01 00:00:00",
+      "2014-09-30 23:00:00"
+    ],
+    "test_range": [
+      "2014-10-01 00:00:00",
+      "2014-12-31 23:00:00"
+    ]
+  },
+  {
+    "config": {
+      "train_path": "train_hourly_preprocessed.parquet",
+      "test_path": "test_hourly_preprocessed.parquet",
+      "cluster_path": "clusters_3models.parquet",
+      "output_dir": "outputs/deepar_random_search_2_3/trial_04",
+      "cluster_ids": [
+        2,
+        3
+      ],
+      "cluster_col": "cluster_kmeans",
+      "freq": "h",
+      "prediction_length": 24,
+      "context_length": 504,
+      "epochs": 5,
+      "learning_rate": 0.0005,
+      "batch_size": 64,
+      "num_batches_per_epoch": 50,
+      "num_layers": 2,
+      "hidden_size": 128,
+      "dropout_rate": 0.05,
+      "num_parallel_samples": 50,
+      "seed": 45,
+      "use_hour_of_day": true,
+      "use_day_of_week": true,
+      "use_weekend": true,
+      "use_month": true,
+      "use_holiday": true,
+      "holiday_country": "PT",
+      "validation_months": 3
+    },
+    "metrics": {
+      "overall_mape": 9.166675980109307,
+      "overall_wmape": 7.286302880683921,
+      "overall_epsilon_mape": 9.5987021836331,
+      "cluster_mape": {
+        "2": 7.830812558193603,
+        "3": 16.14792613281788
+      },
+      "cluster_wmape": {
+        "2": 6.674568151738658,
+        "3": 9.915937089005332
+      },
+      "cluster_epsilon_mape": {
+        "2": 8.121288636217095,
+        "3": 17.319379431419957
+      },
+      "n_predictions": 426144,
+      "n_nonzero_targets": 426140,
+      "n_meters": 193,
+      "meter_mape_head": {
+        "MT_098": 10.251608426868936,
+        "MT_099": 16.355401590582492,
+        "MT_100": 19.537210776672055,
+        "MT_101": 12.269237023809964,
+        "MT_103": 8.793396623296385,
+        "MT_104": 16.33418494587629,
+        "MT_105": 13.410016987014341,
+        "MT_125": 12.779369382106836,
+        "MT_126": 7.007608221403154,
+        "MT_135": 17.9843780303853
+      }
+    },
+    "dynamic_feature_names": [
+      "hour_of_day",
+      "day_of_week",
+      "weekend",
+      "month",
+      "holiday"
+    ],
+    "prediction_path": "outputs/deepar_random_search_2_3/trial_04/deepar_clusters_2_3_validation_predictions.parquet",
+    "metadata_path": "outputs/deepar_random_search_2_3/trial_04/deepar_clusters_2_3_validation_metadata.parquet",
+    "evaluation_split": "validation",
+    "train_range": [
+      "2012-10-01 00:00:00",
+      "2014-06-30 23:00:00"
+    ],
+    "validation_range": [
+      "2014-07-01 00:00:00",
+      "2014-09-30 23:00:00"
+    ],
+    "test_range": [
+      "2014-10-01 00:00:00",
+      "2014-12-31 23:00:00"
+    ]
+  },
+  {
+    "config": {
+      "train_path": "train_hourly_preprocessed.parquet",
+      "test_path": "test_hourly_preprocessed.parquet",
+      "cluster_path": "clusters_3models.parquet",
+      "output_dir": "outputs/deepar_random_search_2_3/trial_05",
+      "cluster_ids": [
+        2,
+        3
+      ],
+      "cluster_col": "cluster_kmeans",
+      "freq": "h",
+      "prediction_length": 24,
+      "context_length": 168,
+      "epochs": 5,
+      "learning_rate": 0.001,
+      "batch_size": 64,
+      "num_batches_per_epoch": 100,
+      "num_layers": 2,
+      "hidden_size": 128,
+      "dropout_rate": 0.3,
+      "num_parallel_samples": 50,
+      "seed": 46,
+      "use_hour_of_day": true,
+      "use_day_of_week": true,
+      "use_weekend": true,
+      "use_month": true,
+      "use_holiday": true,
+      "holiday_country": "PT",
+      "validation_months": 3
+    },
+    "metrics": {
+      "overall_mape": 7.8885688949139965,
+      "overall_wmape": 7.156149108547479,
+      "overall_epsilon_mape": 8.27040885838172,
+      "cluster_mape": {
+        "2": 7.140871014700526,
+        "3": 11.796053638327813
+      },
+      "cluster_wmape": {
+        "2": 6.937070991101438,
+        "3": 8.09788951443231
+      },
+      "cluster_epsilon_mape": {
+        "2": 7.406096406726899,
+        "3": 12.787138444448832
+      },
+      "n_predictions": 426144,
+      "n_nonzero_targets": 426140,
+      "n_meters": 193,
+      "meter_mape_head": {
+        "MT_098": 7.0165529469568595,
+        "MT_099": 9.582830919509163,
+        "MT_100": 13.098612193758727,
+        "MT_101": 7.637265014030282,
+        "MT_103": 5.974229773994907,
+        "MT_104": 10.04534732121395,
+        "MT_105": 10.078880497359542,
+        "MT_125": 9.791028304451839,
+        "MT_126": 6.46592407267004,
+        "MT_135": 13.155004382301897
+      }
+    },
+    "dynamic_feature_names": [
+      "hour_of_day",
+      "day_of_week",
+      "weekend",
+      "month",
+      "holiday"
+    ],
+    "prediction_path": "outputs/deepar_random_search_2_3/trial_05/deepar_clusters_2_3_validation_predictions.parquet",
+    "metadata_path": "outputs/deepar_random_search_2_3/trial_05/deepar_clusters_2_3_validation_metadata.parquet",
+    "evaluation_split": "validation",
+    "train_range": [
+      "2012-10-01 00:00:00",
+      "2014-06-30 23:00:00"
+    ],
+    "validation_range": [
+      "2014-07-01 00:00:00",
+      "2014-09-30 23:00:00"
+    ],
+    "test_range": [
+      "2014-10-01 00:00:00",
+      "2014-12-31 23:00:00"
+    ]
+  },
+  {
+    "config": {
+      "train_path": "train_hourly_preprocessed.parquet",
+      "test_path": "test_hourly_preprocessed.parquet",
+      "cluster_path": "clusters_3models.parquet",
+      "output_dir": "outputs/deepar_random_search_2_3/trial_06",
+      "cluster_ids": [
+        2,
+        3
+      ],
+      "cluster_col": "cluster_kmeans",
+      "freq": "h",
+      "prediction_length": 24,
+      "context_length": 168,
+      "epochs": 10,
+      "learning_rate": 0.0002,
+      "batch_size": 64,
+      "num_batches_per_epoch": 50,
+      "num_layers": 2,
+      "hidden_size": 96,
+      "dropout_rate": 0.1,
+      "num_parallel_samples": 50,
+      "seed": 47,
+      "use_hour_of_day": true,
+      "use_day_of_week": true,
+      "use_weekend": true,
+      "use_month": true,
+      "use_holiday": true,
+      "holiday_country": "PT",
+      "validation_months": 3
+    },
+    "metrics": {
+      "overall_mape": 8.82234152316728,
+      "overall_wmape": 7.855966144407485,
+      "overall_epsilon_mape": 9.219141638168646,
+      "cluster_mape": {
+        "2": 7.89181332907091,
+        "3": 13.685301306749722
+      },
+      "cluster_wmape": {
+        "2": 7.4270530784677335,
+        "3": 9.699713797145565
+      },
+      "cluster_epsilon_mape": {
+        "2": 8.174057441945324,
+        "3": 14.68054937327115
+      },
+      "n_predictions": 426144,
+      "n_nonzero_targets": 426140,
+      "n_meters": 193,
+      "meter_mape_head": {
+        "MT_098": 9.926946357613474,
+        "MT_099": 11.740273916923,
+        "MT_100": 12.522306308316411,
+        "MT_101": 9.928332963733112,
+        "MT_103": 7.860428773681454,
+        "MT_104": 11.712552996765579,
+        "MT_105": 12.251979054705341,
+        "MT_125": 10.62163845687129,
+        "MT_126": 6.942502836207548,
+        "MT_135": 16.131812632247534
+      }
+    },
+    "dynamic_feature_names": [
+      "hour_of_day",
+      "day_of_week",
+      "weekend",
+      "month",
+      "holiday"
+    ],
+    "prediction_path": "outputs/deepar_random_search_2_3/trial_06/deepar_clusters_2_3_validation_predictions.parquet",
+    "metadata_path": "outputs/deepar_random_search_2_3/trial_06/deepar_clusters_2_3_validation_metadata.parquet",
+    "evaluation_split": "validation",
+    "train_range": [
+      "2012-10-01 00:00:00",
+      "2014-06-30 23:00:00"
+    ],
+    "validation_range": [
+      "2014-07-01 00:00:00",
+      "2014-09-30 23:00:00"
+    ],
+    "test_range": [
+      "2014-10-01 00:00:00",
+      "2014-12-31 23:00:00"
+    ]
+  },
+  {
+    "config": {
+      "train_path": "train_hourly_preprocessed.parquet",
+      "test_path": "test_hourly_preprocessed.parquet",
+      "cluster_path": "clusters_3models.parquet",
+      "output_dir": "outputs/deepar_random_search_2_3/trial_07",
+      "cluster_ids": [
+        2,
+        3
+      ],
+      "cluster_col": "cluster_kmeans",
+      "freq": "h",
+      "prediction_length": 24,
+      "context_length": 504,
+      "epochs": 10,
+      "learning_rate": 0.0005,
+      "batch_size": 64,
+      "num_batches_per_epoch": 50,
+      "num_layers": 2,
+      "hidden_size": 128,
+      "dropout_rate": 0.05,
+      "num_parallel_samples": 50,
+      "seed": 48,
+      "use_hour_of_day": true,
+      "use_day_of_week": true,
+      "use_weekend": true,
+      "use_month": true,
+      "use_holiday": true,
+      "holiday_country": "PT",
+      "validation_months": 3
+    },
+    "metrics": {
+      "overall_mape": 7.2632469989753,
+      "overall_wmape": 6.213087784650419,
+      "overall_epsilon_mape": 7.683969241960215,
+      "cluster_mape": {
+        "2": 6.1184154854792245,
+        "3": 13.246160407112903
+      },
+      "cluster_wmape": {
+        "2": 5.684307949662026,
+        "3": 8.486127841005377
+      },
+      "cluster_epsilon_mape": {
+        "2": 6.403358569314784,
+        "3": 14.376192757075055
+      },
+      "n_predictions": 426144,
+      "n_nonzero_targets": 426140,
+      "n_meters": 193,
+      "meter_mape_head": {
+        "MT_098": 6.342045034713608,
+        "MT_099": 11.862660159099818,
+        "MT_100": 16.86615699493256,
+        "MT_101": 8.511763113150188,
+        "MT_103": 5.942832569942716,
+        "MT_104": 13.279128438062692,
+        "MT_105": 11.028096526673338,
+        "MT_125": 11.248044421412873,
+        "MT_126": 5.368731013709331,
+        "MT_135": 14.983896548006982
+      }
+    },
+    "dynamic_feature_names": [
+      "hour_of_day",
+      "day_of_week",
+      "weekend",
+      "month",
+      "holiday"
+    ],
+    "prediction_path": "outputs/deepar_random_search_2_3/trial_07/deepar_clusters_2_3_validation_predictions.parquet",
+    "metadata_path": "outputs/deepar_random_search_2_3/trial_07/deepar_clusters_2_3_validation_metadata.parquet",
+    "evaluation_split": "validation",
+    "train_range": [
+      "2012-10-01 00:00:00",
+      "2014-06-30 23:00:00"
+    ],
+    "validation_range": [
+      "2014-07-01 00:00:00",
+      "2014-09-30 23:00:00"
+    ],
+    "test_range": [
+      "2014-10-01 00:00:00",
+      "2014-12-31 23:00:00"
+    ]
+  },
+  {
+    "config": {
+      "train_path": "train_hourly_preprocessed.parquet",
+      "test_path": "test_hourly_preprocessed.parquet",
+      "cluster_path": "clusters_3models.parquet",
+      "output_dir": "outputs/deepar_random_search_2_3/trial_08",
+      "cluster_ids": [
+        2,
+        3
+      ],
+      "cluster_col": "cluster_kmeans",
+      "freq": "h",
+      "prediction_length": 24,
+      "context_length": 168,
+      "epochs": 5,
+      "learning_rate": 0.0005,
+      "batch_size": 64,
+      "num_batches_per_epoch": 100,
+      "num_layers": 2,
+      "hidden_size": 48,
+      "dropout_rate": 0.05,
+      "num_parallel_samples": 50,
+      "seed": 49,
+      "use_hour_of_day": true,
+      "use_day_of_week": true,
+      "use_weekend": true,
+      "use_month": true,
+      "use_holiday": true,
+      "holiday_country": "PT",
+      "validation_months": 3
+    },
+    "metrics": {
+      "overall_mape": 7.9981843756476785,
+      "overall_wmape": 6.939347747089615,
+      "overall_epsilon_mape": 8.409334325317497,
+      "cluster_mape": {
+        "2": 6.937115328139281,
+        "3": 13.543353386510647
+      },
+      "cluster_wmape": {
+        "2": 6.50531563819048,
+        "3": 8.805100379834403
+      },
+      "cluster_epsilon_mape": {
+        "2": 7.233806760201556,
+        "3": 14.552413859149189
+      },
+      "n_predictions": 426144,
+      "n_nonzero_targets": 426140,
+      "n_meters": 193,
+      "meter_mape_head": {
+        "MT_098": 7.651617357725688,
+        "MT_099": 13.372359225044141,
+        "MT_100": 18.640565065192153,
+        "MT_101": 9.55294382315816,
+        "MT_103": 6.702484624758291,
+        "MT_104": 13.40969590675022,
+        "MT_105": 11.493969766244604,
+        "MT_125": 12.070347105506109,
+        "MT_126": 5.807622259176439,
+        "MT_135": 15.556384956350191
+      }
+    },
+    "dynamic_feature_names": [
+      "hour_of_day",
+      "day_of_week",
+      "weekend",
+      "month",
+      "holiday"
+    ],
+    "prediction_path": "outputs/deepar_random_search_2_3/trial_08/deepar_clusters_2_3_validation_predictions.parquet",
+    "metadata_path": "outputs/deepar_random_search_2_3/trial_08/deepar_clusters_2_3_validation_metadata.parquet",
+    "evaluation_split": "validation",
+    "train_range": [
+      "2012-10-01 00:00:00",
+      "2014-06-30 23:00:00"
+    ],
+    "validation_range": [
+      "2014-07-01 00:00:00",
+      "2014-09-30 23:00:00"
+    ],
+    "test_range": [
+      "2014-10-01 00:00:00",
+      "2014-12-31 23:00:00"
+    ]
+  }
+]
