@@ -31,6 +31,7 @@ class ETSConfig:
     damped_trend: bool = False
     use_boxcox: bool = False
     initialization_method: str = "estimated"
+    strategy: str = "direct"
 
 
 def resolve_output_dir(config: ETSConfig) -> Path:
@@ -143,6 +144,43 @@ def rolling_predict_ets(
     return pred_df
 
 
+def direct_predict_ets(
+    history_panel: pd.DataFrame,
+    eval_panel: pd.DataFrame,
+    config: ETSConfig,
+    progress_desc: str = "ETS direct forecast",
+) -> pd.DataFrame:
+    pred_frames: list[pd.DataFrame] = []
+
+    for meter_id in tqdm(history_panel.columns, desc=progress_desc, unit="meter"):
+        history = history_panel[meter_id].astype(float).copy()
+        eval_series = eval_panel[meter_id].astype(float)
+        fit_res = fit_ets(history, config)
+        pred_mean = np.asarray(fit_res.forecast(len(eval_series)), dtype=float)
+        pred_frames.append(
+            pd.DataFrame(
+                {
+                    "timestamp": eval_series.index,
+                    "meter_id": meter_id,
+                    "cluster_id": config.cluster_id,
+                    "y_true": eval_series.to_numpy(dtype=float),
+                    "y_pred": pred_mean,
+                }
+            )
+        )
+
+    pred_df = pd.concat(pred_frames, ignore_index=True)
+    pred_df["ape"] = np.where(
+        np.abs(pred_df["y_true"]) > 1e-8,
+        np.abs((pred_df["y_true"] - pred_df["y_pred"]) / pred_df["y_true"]) * 100.0,
+        np.nan,
+    )
+    pred_df["epsilon_ape"] = (
+        np.abs(pred_df["y_true"] - pred_df["y_pred"]) / (np.abs(pred_df["y_true"]) + 1.0) * 100.0
+    )
+    return pred_df
+
+
 def summarize_metrics(pred_df: pd.DataFrame) -> dict:
     valid_df = pred_df.loc[pred_df["ape"].notna()].copy()
     overall_mape = float(valid_df["ape"].mean())
@@ -180,7 +218,10 @@ def save_outputs(pred_df: pd.DataFrame, config: ETSConfig, eval_split: str = "va
 def run_experiment(config: ETSConfig) -> dict:
     train_panel, test_panel = load_cluster_panels(config)
     train_sub, val_panel = split_train_validation(train_panel, config.validation_months)
-    pred_df = rolling_predict_ets(train_sub, val_panel, config, progress_desc="ETS validation forecast")
+    if config.strategy == "rolling":
+        pred_df = rolling_predict_ets(train_sub, val_panel, config, progress_desc="ETS validation rolling forecast")
+    else:
+        pred_df = direct_predict_ets(train_sub, val_panel, config, progress_desc="ETS validation direct forecast")
     metrics = summarize_metrics(pred_df)
     pred_path = save_outputs(pred_df, config, eval_split="validation")
 
@@ -192,11 +233,12 @@ def run_experiment(config: ETSConfig) -> dict:
         "train_range": [str(train_sub.index.min()), str(train_sub.index.max())],
         "validation_range": [str(val_panel.index.min()), str(val_panel.index.max())],
         "test_range": [str(test_panel.index.min()), str(test_panel.index.max())],
+        "strategy": config.strategy,
     }
 
 
 def parse_args() -> ETSConfig:
-    parser = argparse.ArgumentParser(description="Train ETS for cluster 7 hourly loads.")
+    parser = argparse.ArgumentParser(description="Train ETS baseline for clustered hourly loads.")
     parser.add_argument("--train-path", default=str(DEFAULT_TRAIN_PATH))
     parser.add_argument("--test-path", default=str(DEFAULT_TEST_PATH))
     parser.add_argument("--cluster-path", default=str(DEFAULT_CLUSTER_PATH))
@@ -208,6 +250,7 @@ def parse_args() -> ETSConfig:
     parser.add_argument("--trend", default="add")
     parser.add_argument("--seasonal", default="add")
     parser.add_argument("--damped-trend", action="store_true")
+    parser.add_argument("--strategy", choices=["direct", "rolling"], default="direct")
     args = parser.parse_args()
 
     return ETSConfig(
@@ -222,6 +265,7 @@ def parse_args() -> ETSConfig:
         trend=None if args.trend == "none" else args.trend,
         seasonal=None if args.seasonal == "none" else args.seasonal,
         damped_trend=args.damped_trend,
+        strategy=args.strategy,
     )
 
 
@@ -232,6 +276,7 @@ def main() -> None:
     print("ETS finished.")
     print(f"Cluster: {config.cluster_id}")
     print(f"Evaluation split: {results['evaluation_split']}")
+    print(f"Strategy: {results['strategy']}")
     print(f"Train range: {results['train_range'][0]} -> {results['train_range'][1]}")
     print(f"Validation range: {results['validation_range'][0]} -> {results['validation_range'][1]}")
     print(f"Test range: {results['test_range'][0]} -> {results['test_range'][1]}")
