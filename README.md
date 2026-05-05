@@ -6,8 +6,9 @@ This repository contains a two-stage electricity load workflow:
 2. downstream forecasting with:
    - a Temporal Fusion Transformer (TFT) for `cluster_id in {10, 12}`
    - a DeepAR branch for cluster groups `2_3`, `7`, and `1_11`
+   - a direct XGBoost branch for singleton Cluster `6` / meter `MT_362`
 
-The TFT implementation lives under `tft/`, the DeepAR implementation lives under `deepar/`, and this root README is the primary project guide for the full pipeline.
+The TFT implementation lives under `tft/`, the DeepAR implementation lives under `deepar/`, the XGBoost implementation lives under `cluster6/`, and this root README is the primary project guide for the full pipeline.
 
 ## Workflow Summary
 
@@ -18,6 +19,8 @@ The full workflow implements:
 - export of filtered hourly train / test forecasting panels
 - DeepAR random-search training for cluster groups `2_3`, `7`, and `1_11`
 - DeepAR validation forecasting, ETS baseline comparison, and future `3`-month forecast exports
+- direct XGBoost model selection and final test evaluation for singleton Cluster `6`
+- Cluster 6 future `14`-day forecast generation for `MT_362`
 - shared TFT pretraining on clusters `10 + 12`
 - per-cluster TFT finetuning for cluster `10`
 - per-cluster TFT finetuning for cluster `12`
@@ -45,6 +48,10 @@ deepar/
   train_ets_cluster7.py
   results_analysis.ipynb
   output/
+cluster6/
+  configs/
+  notebooks/
+  artifacts/
 tft/
   configs/
   src/
@@ -178,6 +185,7 @@ The handoff from clustering to the forecasting branches is:
 3. It exports `clusters_3models.parquet`.
 4. The TFT pipeline reads those artifacts and keeps only meters assigned to KMeans clusters `10` and `12`.
 5. The DeepAR pipeline reads the same artifacts and keeps only meters assigned to the selected DeepAR cluster groups: `2_3`, `7`, and `1_11`.
+6. The Cluster 6 XGBoost pipeline reads the same artifacts and isolates the singleton KMeans cluster `6`, specifically meter `MT_362`.
 
 ## Forecasting Input Handoff
 
@@ -204,6 +212,15 @@ The current DeepAR branch uses the same upstream train / test parquet files, but
 - validation window: final `3` natural months of the train panel
 - future inference horizon: `3` calendar months
 - comparison baseline: ETS at the same validation resolution
+
+The current XGBoost branch also uses the same upstream train / test parquet files. Its working assumption is:
+
+- target meter: `MT_362`
+- target cluster: KMeans Cluster `6`
+- model-development source: `data/train_hourly_preprocessed.parquet`
+- validation window: final `3` natural months of the train panel
+- final test window: `data/test_hourly_preprocessed.parquet`
+- future inference horizon: `14` days
 
 ## TFT Pipeline Overview
 
@@ -489,6 +506,125 @@ For reporting and interpretation, the most useful figure combinations are:
 
 These combinations are also the ones used in the current DeepAR write-up under `deepar/deepar_pre_modeling.md`.
 
+## XGBoost Pipeline Overview
+
+The XGBoost branch is the dedicated forecasting stream for Cluster `6`, which contains the singleton high-load customer `MT_362`. Because this cluster has only one meter, the workflow treats it as a customer-specific direct forecasting problem rather than a pooled multi-user neural model.
+
+The implementation is organized under:
+
+- `cluster6/`
+
+Main notebooks:
+
+- `cluster6/notebooks/cluster6_forecasting.ipynb`
+  - model selection, rolling-origin validation, and final test evaluation
+- `cluster6/notebooks/cluster6_visualization.ipynb`
+  - diagnostic plots for the selected direct model output
+- `cluster6/notebooks/cluster6_future_14d_forecast.ipynb`
+  - final 14-day future forecast generation
+
+### XGBoost modeling setup
+
+The workflow reads the upstream preprocessed hourly train / test panels and the KMeans cluster labels, then selects `MT_362` from Cluster `6`.
+
+Current chronological split:
+
+- model training: `2012-10-01 00:00:00` to `2014-06-30 23:00:00`
+- validation: `2014-07-01 00:00:00` to `2014-09-30 23:00:00`
+- final test: `2014-10-01 00:00:00` to `2014-12-31 23:00:00`
+
+The final test window contains `2,208` hourly observations.
+
+### XGBoost feature design
+
+The model is built as a direct multi-horizon supervised learning problem. For each forecast origin, the feature generator builds one row per future horizon step and predicts the load at `origin + horizon`.
+
+The active feature groups are:
+
+- recent load level, including `last_value`
+- lagged load values at short, daily, weekly, and longer lookback horizons
+- rolling mean, standard deviation, minimum, and maximum summaries
+- target-time calendar variables such as hour, day of week, month, and weekend indicators
+- cyclic calendar encodings for hourly and weekly structure
+- forecast-horizon variables such as horizon step and horizon day
+- conservative recent trend-context variables such as rolling-level ratios and recent slope summaries
+
+All target-derived predictors are computed only from information available at or before the forecast origin. The XGBoost stream does not use future realized load, unshifted rolling target statistics, full-sample statistics, weather, tariff, macroeconomic variables, or broad aggregate cluster loads.
+
+### XGBoost model selection
+
+The Cluster 6 notebook compares:
+
+- naive baseline: repeats the most recent observed load
+- Prophet: explicit trend plus daily, weekly, and yearly seasonal components
+- direct LightGBM: direct multi-horizon tree model
+- direct XGBoost: direct multi-horizon tree model
+
+Selection uses rolling-origin validation MAPE only. The selected model is direct XGBoost:
+
+```text
+n_estimators = 500
+max_depth = 3
+learning_rate = 0.05
+subsample = 0.8
+colsample_bytree = 0.8
+reg_lambda = 1.0
+min_child_weight = 10
+tree_method = hist
+```
+
+Rolling validation results:
+
+| Model | Rolling validation MAPE |
+| --- | ---: |
+| naive | 114.5015% |
+| prophet | 20.0469% |
+| direct_lightgbm | 13.6999% |
+| direct_xgboost | 13.2539% |
+
+### XGBoost final results
+
+After model selection, the selected XGBoost specification is refit and evaluated once on the held-out test period.
+
+| Metric | Value |
+| --- | ---: |
+| Rolling validation MAPE | 13.2539% |
+| Single-split validation MAPE | 14.3641% |
+| Final test MAPE | 15.6502% |
+| Final test WMAPE | 15.4142% |
+| Test observations | 2,208 |
+
+Period-level test MAPE:
+
+| Period | MAPE |
+| --- | ---: |
+| P1 | 14.2538% |
+| P2 | 14.8048% |
+| P3 | 17.8646% |
+
+The selected XGBoost model captures the main hourly and weekly structure for `MT_362`, but accuracy weakens in `P3`, suggesting that this customer has some level or usage-shape shifts that cannot be fully explained by historical load and calendar variables alone.
+
+### XGBoost outputs
+
+Main test-period forecast artifact:
+
+- `cluster6/artifacts/data/c6_prediction.parquet`
+
+Supporting evaluation artifacts:
+
+- `cluster6/artifacts/eval/direct_trend/model_comparison_validation.parquet`
+- `cluster6/artifacts/eval/direct_trend/rolling_validation_details.parquet`
+- `cluster6/artifacts/eval/direct_trend/final_test_results.parquet`
+- `cluster6/artifacts/eval/direct_trend/final_test_forecast_detail.parquet`
+- `cluster6/artifacts/eval/direct_trend/eval_manifest.json`
+
+Future forecast artifacts:
+
+- `cluster6/artifacts/infer/direct_trend/cluster6_final_model_future_14d_predictions.parquet`
+- `cluster6/artifacts/infer/direct_trend/cluster6_final_model_future_14d_manifest.json`
+
+The future forecast starts after `2014-12-31 23:00:00` and covers `2015-01-01 00:00:00` through `2015-01-14 23:00:00`.
+
 ## Input / Output Contract
 
 ### Upstream inputs
@@ -507,6 +643,9 @@ These combinations are also the ones used in the current DeepAR write-up under `
 - DeepAR future `3`-month forecast parquet files under `deepar/output/`
 - ETS baseline validation predictions under `deepar/output/ets_direct_cluster_*/`
 - DeepAR figures and summary tables under `images/deepar/`
+- Cluster 6 XGBoost evaluation artifacts under `cluster6/artifacts/eval/direct_trend/`
+- Cluster 6 XGBoost test prediction parquet under `cluster6/artifacts/data/`
+- Cluster 6 XGBoost future `14`-day forecast artifacts under `cluster6/artifacts/infer/direct_trend/`
 
 ## Model Inputs
 
@@ -547,6 +686,27 @@ The DeepAR branch uses a more compact feature design. Its current model inputs a
   - Portugal holiday flag
 
 Unlike the TFT branch, the current DeepAR implementation does not add explicit target-derived lagged covariates as separate model inputs; temporal dependence is handled autoregressively from the series history.
+
+The XGBoost branch uses explicit leakage-safe tabular features for `MT_362`:
+
+- target:
+  - hourly load for `MT_362`
+- origin-history features:
+  - last observed value
+  - lagged load values
+  - shifted rolling statistics
+- known target-time features:
+  - hour
+  - day of week
+  - month
+  - weekend flag
+  - cyclic calendar encodings
+- horizon features:
+  - horizon step
+  - horizon day
+- trend-context features:
+  - recent rolling-level ratios
+  - recent slope summaries
 
 ## Training Schedule
 
@@ -627,6 +787,14 @@ python deepar/train_ets_cluster7.py --cluster-id 11 --output-dir deepar/output/e
 python deepar/analysis.py --group all
 ```
 
+Representative Cluster 6 XGBoost commands are:
+
+```bash
+conda run -n AML jupyter nbconvert --to notebook --execute --inplace cluster6/notebooks/cluster6_forecasting.ipynb --ExecutePreprocessor.timeout=600
+conda run -n AML jupyter nbconvert --to notebook --execute --inplace cluster6/notebooks/cluster6_visualization.ipynb --ExecutePreprocessor.timeout=600
+conda run -n AML jupyter nbconvert --to notebook --execute --inplace cluster6/notebooks/cluster6_future_14d_forecast.ipynb --ExecutePreprocessor.timeout=600
+```
+
 ## Quick Smoke Test
 
 Quick configs exist under:
@@ -661,6 +829,12 @@ python -m tft.src.eval.evaluate_tft --config tft/configs/data_quick.yaml --panel
   - DeepAR result tables and plots
 - `deepar/deepar_pre_modeling.md`
   - DeepAR preprocessing, modeling, and result write-up
+- `cluster6/notebooks/cluster6_forecasting.ipynb`
+  - Cluster 6 direct XGBoost model selection and final test evaluation
+- `cluster6/notebooks/cluster6_visualization.ipynb`
+  - Cluster 6 diagnostic visualization notebook
+- `cluster6/notebooks/cluster6_future_14d_forecast.ipynb`
+  - Cluster 6 future 14-day forecast notebook
 
 ### Configuration
 
@@ -676,6 +850,8 @@ python -m tft.src.eval.evaluate_tft --config tft/configs/data_quick.yaml --panel
   - cluster-specific evaluation paths
 - `tft/configs/infer.yaml`
   - cluster-specific future inference paths
+- `cluster6/configs/cluster6.yaml`
+  - Cluster 6 target meter, upstream data paths, rolling validation origins, and artifact paths
 
 ### Source modules
 
@@ -703,6 +879,8 @@ python -m tft.src.eval.evaluate_tft --config tft/configs/data_quick.yaml --panel
   - ETS baseline generation for the DeepAR comparison branch
 - `deepar/analysis.py`
   - DeepAR summary-table construction and figure generation
+- `cluster6/notebooks/cluster6_forecasting.ipynb`
+  - direct XGBoost / LightGBM / Prophet / naive comparison for `MT_362`
 
 ### Output artifacts
 
@@ -716,6 +894,12 @@ python -m tft.src.eval.evaluate_tft --config tft/configs/data_quick.yaml --panel
   - ETS validation baselines used by the current DeepAR reporting
 - `images/deepar/`
   - combined and per-group DeepAR figures
+- `cluster6/artifacts/data/c6_prediction.parquet`
+  - Cluster 6 selected XGBoost test-period prediction artifact
+- `cluster6/artifacts/eval/direct_trend/`
+  - Cluster 6 validation comparison, final test metrics, forecast details, and manifest
+- `cluster6/artifacts/infer/direct_trend/`
+  - Cluster 6 future 14-day XGBoost forecast and manifest
 
 ## Recommended Output Retention
 
