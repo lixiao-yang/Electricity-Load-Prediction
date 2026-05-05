@@ -9,6 +9,7 @@ dependencies:
   - matplotlib
   - seaborn
   - ipykernel
+  - notebook
   - scipy
   - scikit-learn
   - plotly
@@ -23,5 +24,14 @@ dependencies:
   - tensorboard
   - streamlit
   - python-dotenv
+  - pyyaml
+  - holidays
+  - pytorch
+  - lightning
+  - pytorch-lightning
+  - pytorch-forecasting
+  - gluonts
+  - xgboost
+  - lightgbm
+  - prophet
   - openai
-prefix: C:\Softwares\miniconda3\envs\forecasting-electricity
